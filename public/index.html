@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>역사 수호대: 타임 리프</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --bg: #f5f7fa;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -1px;
+        }
+
+        header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .progress-stats {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-box h3 {
+            font-size: 0.85em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-box p {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .eras-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .era-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .era-card:nth-child(1) { animation-delay: 0.1s; }
+        .era-card:nth-child(2) { animation-delay: 0.2s; }
+        .era-card:nth-child(3) { animation-delay: 0.3s; }
+        .era-card:nth-child(4) { animation-delay: 0.4s; }
+        .era-card:nth-child(5) { animation-delay: 0.5s; }
+        .era-card:nth-child(6) { animation-delay: 0.6s; }
+        .era-card:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .era-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .era-header {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5em;
+            font-weight: bold;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 시대별 배경색 */
+        .era-sonsahui { background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); }
+        .era-gojoseon { background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%); }
+        .era-samguk { background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%); }
+        .era-nambukguk { background: linear-gradient(135deg, #4169E1 0%, #87CEEB 100%); }
+        .era-goryeo { background: linear-gradient(135deg, #228B22 0%, #32CD32 100%); }
+        .era-joseon { background: linear-gradient(135deg, #FF6347 0%, #FF8C00 100%); }
+        .era-geunhyundae { background: linear-gradient(135deg, #1E90FF 0%, #00CED1 100%); }
+
+        .era-content {
+            padding: 25px;
+        }
+
+        .era-name {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .era-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .era-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .label {
+            font-size: 0.8em;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .stat-item .value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent), #d35400);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
+        }
+
+        .start-btn:active {
+            transform: translateY(0);
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 80px;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2em;
+            }
+
+            header p {
+                font-size: 1.1em;
+            }
+
+            .eras-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🛡️ 역사 수호대: 타임 리프</h1>
+        <p>제인 수호대장과 함께 한국 역사를 배우자!</p>
+    </header>
+
+    <div class="progress-stats" id="progress-stats">
+        <div class="stat-box">
+            <h3>완료한 시대</h3>
+            <p id="completed-count">0/7</p>
+        </div>
+        <div class="stat-box">
+            <h3>전체 진행도</h3>
+            <p id="overall-progress">0%</p>
+        </div>
+        <div class="stat-box">
+            <h3>총 문제 풀음</h3>
+            <p id="total-problems">0개</p>
+        </div>
+        <div class="stat-box">
+            <h3>평균 정확도</h3>
+            <p id="avg-accuracy">0%</p>
+        </div>
+    </div>
+
+    <div class="eras-grid">
+        <!-- 선사시대 -->
+        <div class="era-card">
+            <div class="era-header era-sonsahui">🪨</div>
+            <div class="era-content">
+                <div class="era-name">선사시대</div>
+                <div class="era-description">인류가 처음으로 도구를 만들고 농경을 시작한 시대</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-sonsahui">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=sonsahui" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+
+        <!-- 고조선 -->
+        <div class="era-card">
+            <div class="era-header era-gojoseon">👑</div>
+            <div class="era-content">
+                <div class="era-name">고조선</div>
+                <div class="era-description">우리 민족 최초의 국가, 법치주의의 기초를 마련한 시대</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-gojoseon">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=gojoseon" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+
+        <!-- 삼국시대 -->
+        <div class="era-card">
+            <div class="era-header era-samguk">⚔️</div>
+            <div class="era-content">
+                <div class="era-name">삼국시대</div>
+                <div class="era-description">고구려, 백제, 신라가 한반도의 패권을 놓고 벌인 경쟁</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-samguk">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=samguk" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+
+        <!-- 남북국시대 -->
+        <div class="era-card">
+            <div class="era-header era-nambukguk">🌊</div>
+            <div class="era-content">
+                <div class="era-name">남북국시대</div>
+                <div class="era-description">신라와 발해가 한반도를 나누어 통치한 시대</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-nambukguk">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=nambukguk" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+
+        <!-- 고려 -->
+        <div class="era-card">
+            <div class="era-header era-goryeo">🌿</div>
+            <div class="era-content">
+                <div class="era-name">고려</div>
+                <div class="era-description">청자와 팔만대장경을 남긴 문화의 전성기</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-goryeo">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=goryeo" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+
+        <!-- 조선 -->
+        <div class="era-card">
+            <div class="era-header era-joseon">📖</div>
+            <div class="era-content">
+                <div class="era-name">조선</div>
+                <div class="era-description">한글을 창제하고 유교 문화의 꽃을 피운 시대</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-joseon">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=joseon" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+
+        <!-- 근현대 -->
+        <div class="era-card">
+            <div class="era-header era-geunhyundae">🚀</div>
+            <div class="era-content">
+                <div class="era-name">근현대</div>
+                <div class="era-description">일제강점기를 거쳐 대한민국 수립까지의 격동의 시대</div>
+                <div class="era-stats">
+                    <div class="stat-item">
+                        <div class="label">문제 수</div>
+                        <div class="value">20개</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">난이도</div>
+                        <div class="value">초~고</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">진행도</div>
+                        <div class="value" id="progress-geunhyundae">0%</div>
+                    </div>
+                </div>
+                <a href="/learn.html?era=geunhyundae" class="start-btn">학습 시작</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>💡 각 시대별로 배경 이야기를 먼저 읽고, 그 다음 관련 문제를 풀어보세요!</p>
+    </div>
+</div>
+
+<script>
+    function updateProgress() {
+        const progress = JSON.parse(localStorage.getItem('janeProgress') || '{}');
+        
+        let completed = 0;
+        let totalProblems = 0;
+        let totalCorrect = 0;
+
+        for (const [era, data] of Object.entries(progress)) {
+            if (data.completed) completed++;
+            totalProblems += data.total || 0;
+            totalCorrect += data.correct || 0;
+        }
+
+        document.getElementById('completed-count').textContent = `${completed}/7`;
+        document.getElementById('overall-progress').textContent = `${Math.round((completed / 7) * 100)}%`;
+        document.getElementById('total-problems').textContent = `${totalProblems}개`;
+        const avgAcc = totalProblems > 0 ? Math.round((totalCorrect / totalProblems) * 100) : 0;
+        document.getElementById('avg-accuracy').textContent = `${avgAcc}%`;
+
+        // 시대별 진행도 업데이트
+        const eras = ['sonsahui', 'gojoseon', 'samguk', 'nambukguk', 'goryeo', 'joseon', 'geunhyundae'];
+        eras.forEach(era => {
+            const eraData = progress[era];
+            const percentage = (eraData && eraData.total > 0) 
+                ? Math.round((eraData.correct / eraData.total) * 100) 
+                : 0;
+            const elem = document.getElementById(`progress-${era}`);
+            if (elem) elem.textContent = `${percentage}%`;
+        });
+    }
+
+    updateProgress();
+    window.addEventListener('storage', updateProgress);
+</script>
+
+</body>
+</html>

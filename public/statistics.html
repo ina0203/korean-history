@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 학습 통계 및 진행도 추적</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #ff6b6b;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .stat-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .chart-section {
+            margin: 30px 0;
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 10px;
+        }
+
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .difficulty-card.elementary {
+            border-color: #a8e6cf;
+            background: #f0fdf7;
+        }
+
+        .difficulty-card.middle {
+            border-color: #ffd3b6;
+            background: #fffbf0;
+        }
+
+        .difficulty-card.high {
+            border-color: #ffaaa5;
+            background: #fff5f5;
+        }
+
+        .difficulty-card.suneung {
+            border-color: #ff8b94;
+            background: #fff5f5;
+        }
+
+        .difficulty-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .difficulty-name {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .difficulty-count {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .difficulty-note {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .era-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .era-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .era-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .era-count {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .era-count span {
+            font-size: 0.7em;
+            color: #999;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .highlight-box h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .feature-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        .feature-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .difficulty-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .era-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 한국 역사 학습 통계</h1>
+            <p>초등학교~수능까지 모든 자료 분석</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <h2>🎯 170개 이상의 다양한 문제</h2>
+                <p>초등학교 기초부터 수능 대비까지 완벽하게 준비하세요!</p>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-title">📚 난이도별 문제 분포</div>
+                <div class="difficulty-grid">
+                    <div class="difficulty-card elementary">
+                        <div class="difficulty-icon">📖</div>
+                        <div class="difficulty-name">초등 기초</div>
+                        <div class="difficulty-count" id="count-elementary">0</div>
+                        <div class="difficulty-note">기본 개념 이해</div>
+                    </div>
+                    <div class="difficulty-card middle">
+                        <div class="difficulty-icon">📕</div>
+                        <div class="difficulty-name">중학 심화</div>
+                        <div class="difficulty-count" id="count-middle">0</div>
+                        <div class="difficulty-note">인과관계 분석</div>
+                    </div>
+                    <div class="difficulty-card high">
+                        <div class="difficulty-icon">📘</div>
+                        <div class="difficulty-name">고등 심화</div>
+                        <div class="difficulty-count" id="count-high">0</div>
+                        <div class="difficulty-note">심화 개념 학습</div>
+                    </div>
+                    <div class="difficulty-card suneung">
+                        <div class="difficulty-icon">🏆</div>
+                        <div class="difficulty-name">수능 대비</div>
+                        <div class="difficulty-count" id="count-suneung">0</div>
+                        <div class="difficulty-note">최고 난이도</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-title">🏛️ 시대별 문제 분포</div>
+                <div class="era-stats">
+                    <div class="era-item">
+                        <div class="era-name">선사시대</div>
+                        <div class="era-count"><span id="era-1">0</span></div>
+                    </div>
+                    <div class="era-item">
+                        <div class="era-name">고조선</div>
+                        <div class="era-count"><span id="era-2">0</span></div>
+                    </div>
+                    <div class="era-item">
+                        <div class="era-name">삼국시대</div>
+                        <div class="era-count"><span id="era-3">0</span></div>
+                    </div>
+                    <div class="era-item">
+                        <div class="era-name">남북국시대</div>
+                        <div class="era-count"><span id="era-4">0</span></div>
+                    </div>
+                    <div class="era-item">
+                        <div class="era-name">고려</div>
+                        <div class="era-count"><span id="era-5">0</span></div>
+                    </div>
+                    <div class="era-item">
+                        <div class="era-name">조선</div>
+                        <div class="era-count"><span id="era-6">0</span></div>
+                    </div>
+                    <div class="era-item">
+                        <div class="era-name">근현대</div>
+                        <div class="era-count"><span id="era-7">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-title">✨ 학습 특징</div>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <h4>🎯 목표 설정</h4>
+                        <p>명확한 난이도별 목표로 체계적인 학습 계획을 세웁니다.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>♾️ 무한 반복</h4>
+                        <p>같은 문제도 반복 출제되어 확실한 이해를 도와줍니다.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>📊 실시간 추적</h4>
+                        <p>정확도, 정답 개수, 시간 등을 실시간으로 추적합니다.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>🏆 성취 시스템</h4>
+                        <p>완벽한 단계별 성취감으로 동기 부여를 지속합니다.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>📚 전국 출제 문제</h4>
+                        <p>실제 시험에 나온 문제들로 실전 연습을 합니다.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>🔄 개념 순환</h4>
+                        <p>5단계 나선형 학습으로 깊이 있는 이해를 도와줍니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard full-width">
+                <div class="card">
+                    <h3>📈 최근 학습 통계</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">총 문제 수</span>
+                        <span class="stat-value" id="total-questions">170+</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">난이도 단계</span>
+                        <span class="stat-value">4단계</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">시대 범위</span>
+                        <span class="stat-value">선사~근현대</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">학습 모드</span>
+                        <span class="stat-value">2가지</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🎯 추천 학습 경로</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">1단계</span>
+                        <span class="stat-value">초등 기초 정복</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">2단계</span>
+                        <span class="stat-value">중학 심화 학습</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">3단계</span>
+                        <span class="stat-value">고등 심화 정복</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">4단계</span>
+                        <span class="stat-value">수능 완전 대비</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <a href="infinite-learning.html" class="btn btn-primary">🚀 무한 반복 학습 시작</a>
+                <a href="interactive-chapter.html" class="btn btn-secondary">📖 기본 학습 다시 보기</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz-database.js"></script>
+    <script>
+        // 난이도별 문제 개수 계산
+        function countByLevel(level) {
+            return allQuizzes.filter(q => q.level === level).length;
+        }
+
+        // 시대별 문제 개수 계산
+        function countByEra(era) {
+            return allQuizzes.filter(q => q.era === era).length;
+        }
+
+        // 통계 표시
+        document.getElementById('count-elementary').textContent = countByLevel('elementary');
+        document.getElementById('count-middle').textContent = countByLevel('middle');
+        document.getElementById('count-high').textContent = countByLevel('high');
+        document.getElementById('count-suneung').textContent = countByLevel('suneung');
+
+        document.getElementById('era-1').textContent = countByEra('선사시대');
+        document.getElementById('era-2').textContent = countByEra('고조선');
+        document.getElementById('era-3').textContent = countByEra('삼국시대');
+        document.getElementById('era-4').textContent = countByEra('남북국시대');
+        document.getElementById('era-5').textContent = countByEra('고려');
+        document.getElementById('era-6').textContent = countByEra('조선');
+        document.getElementById('era-7').textContent = countByEra('근현대');
+
+        document.getElementById('total-questions').textContent = allQuizzes.length;
+    </script>
+</body>
+</html>

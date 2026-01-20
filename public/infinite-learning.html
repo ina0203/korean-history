@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 무한 반복 학습 시스템 - 역사 수호대</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #ff6b6b;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .mode-btn {
+            padding: 20px;
+            border: 3px solid #667eea;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .filter-section {
+            padding: 20px;
+            background: white;
+            border-bottom: 2px solid #e9ecef;
+            display: none;
+        }
+
+        .filter-section.active {
+            display: block;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input {
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .era-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .difficulty-tag {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .difficulty-tag.elementary {
+            background: #a8e6cf;
+            color: #1d4d2d;
+        }
+
+        .difficulty-tag.middle {
+            background: #ffd3b6;
+            color: #8b4513;
+        }
+
+        .difficulty-tag.high {
+            background: #ffaaa5;
+            color: #8b0000;
+        }
+
+        .difficulty-tag.suneung {
+            background: #ff8b94;
+            color: #8b0000;
+            font-weight: 700;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #e7efff;
+        }
+
+        .option-btn.correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            color: #1d4d2d;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            border-color: #e74c3c;
+            background: #fadbd8;
+            color: #8b0000;
+        }
+
+        .feedback {
+            display: none;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: #d5f4e6;
+            border-left: 5px solid #27ae60;
+            color: #1d4d2d;
+        }
+
+        .feedback.incorrect {
+            background: #fadbd8;
+            border-left: 5px solid #e74c3c;
+            color: #8b0000;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #333;
+            border: 2px solid #bdc3c7;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        .completion-msg {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            color: white;
+            border-radius: 15px;
+            animation: bounceIn 0.6s ease;
+        }
+
+        .completion-msg.show {
+            display: block;
+        }
+
+        .completion-msg h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 1.5em;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0%, 20%, 50%, 80%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            10%, 90% {
+                transform: scale(0.95);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mode-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 무한 반복 학습 시스템</h1>
+            <p>170개 이상의 다양한 문제로 초등~수능 완전 정복하기!</p>
+        </header>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="switchMode('infinite')">
+                ♾️ 무한 반복 모드
+            </button>
+            <button class="mode-btn" onclick="switchMode('filtered')">
+                🎯 필터링 모드
+            </button>
+        </div>
+
+        <div id="filterSection" class="filter-section">
+            <div class="filter-group">
+                <label class="filter-label">📚 난이도 선택</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-elementary" value="elementary" checked>
+                        <label for="level-elementary">초등 기초</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-middle" value="middle" checked>
+                        <label for="level-middle">중학 심화</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-high" value="high" checked>
+                        <label for="level-high">고등 심화</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="level-suneung" value="suneung" checked>
+                        <label for="level-suneung">수능 대비</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">🏛️ 시대 선택</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="선사시대" checked>
+                        <label>선사시대</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="고조선" checked>
+                        <label>고조선</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="삼국시대" checked>
+                        <label>삼국시대</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="남북국시대" checked>
+                        <label>남북국시대</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="고려" checked>
+                        <label>고려</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="조선" checked>
+                        <label>조선</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" value="근현대" checked>
+                        <label>근현대</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="startFilteredQuiz()" style="width: 100%; margin-top: 20px;">
+                선택한 조건으로 문제풀기 시작
+            </button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">시대</div>
+                <div class="stat-value" id="eraDisplay">선사시대</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">진행도</div>
+                <div id="questionCount">1/170</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overallProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">정답</div>
+                <div class="stat-value" id="correctCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">정확도</div>
+                <div class="stat-value" id="accuracy">0%</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="quizContainer" class="quiz-container active">
+                <div class="question-card">
+                    <div id="tagContainer"></div>
+                    <div class="question-text" id="questionText">문제를 로딩 중입니다...</div>
+                    <div class="options" id="optionsContainer">
+                        <button class="option-btn" onclick="selectOption(1)">로딩 중...</button>
+                    </div>
+                    <div class="feedback" id="feedbackCorrect">
+                        <strong>✓ 정답입니다!</strong><br>
+                        <span id="feedbackText"></span>
+                    </div>
+                    <div class="feedback" id="feedbackWrong">
+                        <strong>✗ 다시 생각해보세요</strong><br>
+                        <span id="hintText"></span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display: none;">
+                        다음 문제 →
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetQuiz()">
+                        처음부터 다시
+                    </button>
+                </div>
+            </div>
+
+            <div id="completionMsg" class="completion-msg">
+                <h2>🎉 축하합니다!</h2>
+                <p>무한 반복 학습 완료</p>
+                <div class="score-display" id="scoreDisplay">0/170</div>
+                <p style="margin-top: 20px;">계속 반복하여 완벽히 정복하세요!</p>
+                <button class="btn btn-primary" onclick="restartLearning()" style="margin-top: 20px;">
+                    다시 학습하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz-database.js"></script>
+    <script>
+        let currentMode = 'infinite';
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let answered = false;
+        let quizzes = [];
+        let totalQuestions = 0;
+
+        // 모드 전환
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const filterSection = document.getElementById('filterSection');
+            if (mode === 'filtered') {
+                filterSection.classList.add('active');
+            } else {
+                filterSection.classList.remove('active');
+            }
+        }
+
+        // 필터링 모드에서 시작
+        function startFilteredQuiz() {
+            const selectedLevels = [];
+            const selectedEras = [];
+
+            // 난이도 선택 확인
+            document.querySelectorAll('input[id^="level-"]').forEach(checkbox => {
+                if (checkbox.checked) selectedLevels.push(checkbox.value);
+            });
+
+            // 시대 선택 확인  
+            const filterGroups = document.querySelectorAll('.filter-group');
+            const eraGroup = filterGroups[filterGroups.length - 1];
+            eraGroup.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedEras.push(checkbox.value);
+                }
+            });
+
+            if (selectedLevels.length === 0) {
+                alert('최소 하나의 난이도를 선택해주세요!');
+                return;
+            }
+
+            if (selectedEras.length === 0) {
+                alert('최소 하나의 시대를 선택해주세요!');
+                return;
+            }
+
+            quizzes = allQuizzes.filter(q => selectedLevels.includes(q.level) && selectedEras.includes(q.era));
+            
+            if (quizzes.length === 0) {
+                alert('선택한 조건에 해당하는 문제가 없습니다!');
+                return;
+            }
+
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            answered = false;
+            totalQuestions = quizzes.length;
+            currentMode = 'filtered';
+
+            document.getElementById('completionMsg').classList.remove('show');
+            document.getElementById('quizContainer').classList.add('active');
+            displayQuestion();
+        }
+
+        // 무한 반복 모드에서 시작
+        function startInfiniteMode() {
+            quizzes = allQuizzes;
+            totalQuestions = allQuizzes.length;
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            answered = false;
+
+            document.getElementById('completionMsg').classList.remove('show');
+            document.getElementById('quizContainer').classList.add('active');
+            displayQuestion();
+        }
+
+        // 문제 로드
+        function loadQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showCompletion();
+                return;
+            }
+            displayQuestion();
+        }
+
+        // 문제 표시
+        function displayQuestion() {
+            if (!quizzes || quizzes.length === 0) {
+                console.error('Quiz data not loaded');
+                return;
+            }
+
+            if (currentQuestionIndex >= totalQuestions) {
+                showCompletion();
+                return;
+            }
+
+            const quiz = quizzes[currentQuestionIndex % quizzes.length];
+            
+            // 태그 표시
+            const tagContainer = document.getElementById('tagContainer');
+            tagContainer.innerHTML = `
+                <span class="era-tag">${quiz.era}</span>
+                <span class="difficulty-tag ${quiz.level}">${
+                    quiz.level === 'elementary' ? '초등 기초' :
+                    quiz.level === 'middle' ? '중학 심화' :
+                    quiz.level === 'high' ? '고등 심화' :
+                    '수능 대비'
+                }</span>
+            `;
+
+            // 문제 표시
+            const questionText = document.getElementById('questionText');
+            if (questionText) {
+                questionText.textContent = quiz.question;
+            }
+            
+            const eraDisplay = document.getElementById('eraDisplay');
+            if (eraDisplay) {
+                eraDisplay.textContent = quiz.era;
+            }
+
+            // 선택지 표시
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            quiz.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => selectOption(index + 1);
+                optionsContainer.appendChild(btn);
+            });
+
+            // 피드백 초기화
+            document.getElementById('feedbackCorrect').classList.remove('show');
+            document.getElementById('feedbackWrong').classList.remove('show');
+            document.getElementById('nextBtn').style.display = 'none';
+
+            answered = false;
+            updateStats();
+        }
+
+        // 선택지 선택
+        function selectOption(selectedOption) {
+            if (answered) return;
+            answered = true;
+
+            const quiz = quizzes[currentQuestionIndex % quizzes.length];
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons[selectedOption - 1].classList.add('selected');
+
+            const feedbackCorrect = document.getElementById('feedbackCorrect');
+            const feedbackWrong = document.getElementById('feedbackWrong');
+
+            if (selectedOption === quiz.correct) {
+                buttons[quiz.correct - 1].classList.add('correct');
+                document.getElementById('feedbackText').textContent = quiz.explanation || '맞습니다!';
+                feedbackCorrect.classList.add('show');
+                correctAnswers++;
+            } else {
+                buttons[selectedOption - 1].classList.add('incorrect');
+                buttons[quiz.correct - 1].classList.add('correct');
+                document.getElementById('hintText').textContent = `정답: ${quiz.options[quiz.correct - 1]}`;
+                feedbackWrong.classList.add('show');
+            }
+
+            updateStats();
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        // 통계 업데이트
+        function updateStats() {
+            const current = currentQuestionIndex + 1;
+            document.getElementById('questionCount').textContent = `${current}/${totalQuestions}`;
+            document.getElementById('overallProgress').style.width = `${(current / totalQuestions) * 100}%`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('accuracy').textContent = `${Math.round((correctAnswers / current) * 100)}%`;
+        }
+
+        // 다음 문제
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= totalQuestions) {
+                showCompletion();
+            } else {
+                displayQuestion();
+            }
+        }
+
+        // 완료 화면
+        function showCompletion() {
+            document.getElementById('quizContainer').classList.remove('active');
+            document.getElementById('completionMsg').classList.add('show');
+            document.getElementById('scoreDisplay').textContent = 
+                `🏆 최종 성적: ${correctAnswers}/${totalQuestions} (${Math.round((correctAnswers / totalQuestions) * 100)}%)`;
+        }
+
+        // 리셋
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            answered = false;
+            document.getElementById('quizContainer').classList.add('active');
+            document.getElementById('completionMsg').classList.remove('show');
+            displayQuestion();
+        }
+
+        // 재시작
+        function restartLearning() {
+            resetQuiz();
+        }
+
+        // 초기 로드
+        startInfiniteMode();
+    </script>
+</body>
+</html>

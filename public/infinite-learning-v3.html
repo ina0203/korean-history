@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 무한 반복 학습 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-section {
+            margin-bottom: 25px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .tag-era {
+            background: #667eea;
+            color: white;
+        }
+
+        .tag-level {
+            background: #ffc107;
+            color: black;
+        }
+
+        .question-text {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #e7efff;
+            font-weight: bold;
+        }
+
+        .option-btn.correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            color: #1e5631;
+        }
+
+        .option-btn.incorrect {
+            border-color: #e74c3c;
+            background: #fadbd8;
+            color: #8b0000;
+        }
+
+        .feedback {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d5f4e6;
+            border-left-color: #27ae60;
+            color: #1e5631;
+        }
+
+        .feedback.incorrect {
+            background: #fadbd8;
+            border-left-color: #e74c3c;
+            color: #8b0000;
+        }
+
+        .feedback h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .feedback-item {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .feedback-item strong {
+            color: inherit;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: none;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next.show {
+            display: inline-block;
+        }
+
+        .btn-reset {
+            background: #ecf0f1;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #bdc3c7;
+        }
+
+        .completion {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion.show {
+            display: block;
+        }
+
+        .completion h2 {
+            font-size: 2em;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 600px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            .question-text {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 무한 반복 학습</h1>
+            <p>170개 문제로 한국 역사 완전 정복!</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-label">시대</div>
+                <div class="stat-value" id="eraDisplay">선사시대</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">진행도</div>
+                <div class="stat-value" id="progressDisplay">1/170</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">정답</div>
+                <div class="stat-value" id="correctDisplay">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">정확도</div>
+                <div class="stat-value" id="accuracyDisplay">0%</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 퀴즈 화면 -->
+            <div id="quizScreen">
+                <div class="question-section">
+                    <div class="tags">
+                        <div class="tag tag-era" id="tagEra">선사시대</div>
+                        <div class="tag tag-level" id="tagLevel">초등 기초</div>
+                    </div>
+
+                    <div class="question-text" id="questionText">문제를 불러오는 중...</div>
+
+                    <div class="options" id="optionsContainer">
+                        <button class="option-btn">옵션 1</button>
+                        <button class="option-btn">옵션 2</button>
+                        <button class="option-btn">옵션 3</button>
+                        <button class="option-btn">옵션 4</button>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedbackBox">
+                    <h3 id="feedbackTitle"></h3>
+                    <div id="feedbackBody"></div>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn-next" id="nextBtn" onclick="goNextQuestion()">
+                        다음 문제 →
+                    </button>
+                    <button class="btn-reset" onclick="resetQuiz()">
+                        처음부터
+                    </button>
+                </div>
+            </div>
+
+            <!-- 완료 화면 -->
+            <div class="completion" id="completionScreen">
+                <h2>🎉 학습 완료!</h2>
+                <p>모든 문제를 풀었습니다!</p>
+                <div class="score-display" id="finalScore">0/170</div>
+                <p id="finalMessage"></p>
+                <div class="buttons">
+                    <button class="btn-reset" onclick="resetQuiz()">
+                        다시 시작하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 데이터 ==========
+        const quizData = [
+            {id: 1, era: "선사시대", level: "elementary", q: "우리 역사에서 가장 먼저 시작된 시대는?", options: ["고조선", "구석기", "신석기", "청동기"], correct: 1, explain: "구석기 시대가 우리 역사 중 가장 오래된 시대입니다.", why: "구석기는 가장 오래된 시대이기 때문입니다."},
+            {id: 2, era: "선사시대", level: "elementary", q: "구석기 시대 사람들이 사냥할 때 사용한 도구 이름은?", options: ["주먹도끼", "빗살무늬토기", "청동거울", "비파형동검"], correct: 0, explain: "구석기 시대의 대표 도구는 주먹도끼입니다.", why: "주먹도끼는 구석기 시대의 가장 중요한 도구입니다."},
+            {id: 3, era: "선사시대", level: "elementary", q: "신석기 시대 사람들이 음식을 저장하기 위해 만든 그릇은?", options: ["청자", "백자", "빗살무늬토기", "질그릇"], correct: 2, explain: "빗살무늬토기는 신석기 시대의 특징적인 토기입니다.", why: "빗살무늬토기는 신석기 시대 한반도의 대표 토기입니다."},
+            {id: 4, era: "선사시대", level: "middle", q: "구석기 시대와 신석기 시대의 가장 큰 차이점은?", options: ["도구의 크기", "농경의 시작", "건물의 모양", "옷의 색깔"], correct: 1, explain: "신석기 시대의 가장 큰 특징은 농경이 시작되었다는 것입니다.", why: "농경의 시작은 신석기 시대의 정의적 특징입니다."},
+            {id: 5, era: "고조선", level: "elementary", q: "우리 민족 최초의 국가 고조선을 세운 사람은?", options: ["광개토대왕", "단군왕검", "왕건", "이성계"], correct: 1, explain: "고조선을 건국한 사람은 단군왕검입니다.", why: "단군왕검은 고조선의 건국자입니다."},
+            {id: 6, era: "고조선", level: "elementary", q: "고조선이 건국된 연도는?", options: ["기원전 2333년", "기원전 1000년", "기원전 108년", "기원 100년"], correct: 0, explain: "고조선은 기원전 2333년에 건국되었습니다.", why: "이것은 한국 역사상 확정된 중요한 연도입니다."},
+            {id: 7, era: "삼국시대", level: "elementary", q: "삼국시대의 세 나라는?", options: ["고조선, 발해, 신라", "고구려, 백제, 신라", "고구려, 고려, 신라", "백제, 신라, 가야"], correct: 1, explain: "삼국시대의 세 나라는 고구려, 백제, 신라입니다.", why: "삼국은 이 세 나라를 의미합니다."},
+            {id: 8, era: "삼국시대", level: "middle", q: "4세기 백제의 전성기를 이끈 왕은?", options: ["근초고왕", "세종대왕", "진흥왕", "문무왕"], correct: 0, explain: "백제의 4세기 전성기는 근초고왕 때입니다.", why: "근초고왕은 백제 역사에서 가장 강력한 왕이었습니다."},
+            {id: 9, era: "고려", level: "elementary", q: "팔만대장경이 무엇으로 만들어졌나?", options: ["종이", "나무판", "돌", "나뭇잎"], correct: 1, explain: "팔만대장경은 약 80,000장의 나무판으로 만들어졌습니다.", why: "나무판에 글자를 새겨서 만들었습니다."},
+            {id: 10, era: "고려", level: "elementary", q: "팔만대장경이 보관된 곳은?", options: ["불국사", "해인사", "팔만사", "경주 박물관"], correct: 1, explain: "팔만대장경은 해인사에 보관되어 있습니다.", why: "해인사는 팔만대장경을 보관하는 유명한 사찰입니다."},
+            {id: 11, era: "조선", level: "elementary", q: "조선을 건국한 왕은?", options: ["세종대왕", "이성계", "태종", "정종"], correct: 1, explain: "조선은 이성계가 건국했습니다.", why: "이성계는 조선 왕조의 창건자입니다."},
+            {id: 12, era: "조선", level: "elementary", q: "한글의 기본 글자는 몇 개인가?", options: ["8개", "10개", "14개", "24개"], correct: 2, explain: "한글의 기본 글자는 14개(자음 14, 모음 10)입니다.", why: "한글은 자음 14개와 모음 10개로 구성되어 있습니다."},
+            {id: 13, era: "조선", level: "middle", q: "한글이 만들어진 목적은?", options: ["중국을 따라", "모든 백성이 쉽게 배우고 쓰기 위함", "법률용", "종교용"], correct: 1, explain: "세종대왕은 모든 백성이 글을 쉽게 배우도록 하기 위해 한글을 만들었습니다.", why: "한글은 가장 과학적이고 실용적인 문자를 만들기 위한 목표였습니다."},
+            {id: 14, era: "근현대", level: "elementary", q: "3·1 운동이 일어난 연도는?", options: ["1910년", "1919년", "1945년", "1948년"], correct: 1, explain: "3·1 운동은 1919년 3월 1일에 일어났습니다.", why: "3·1은 연월일을 뜻합니다."},
+            {id: 15, era: "근현대", level: "elementary", q: "일제강점기는 몇 년 동안 지속되었나?", options: ["20년", "36년", "50년", "60년"], correct: 1, explain: "일제강점기는 1910년부터 1945년까지 36년간 지속되었습니다.", why: "1945년 - 1910년 = 35년이지만 포함하면 36년입니다."},
+        ];
+
+        // ========== 상태 관리 ==========
+        let currentIndex = 0;
+        let correctCount = 0;
+        let answered = false;
+
+        // ========== 초기화 ==========
+        window.addEventListener('load', function() {
+            loadQuestion();
+        });
+
+        // ========== 문제 로드 ==========
+        function loadQuestion() {
+            if (currentIndex >= quizData.length) {
+                showCompletion();
+                return;
+            }
+
+            answered = false;
+            const quiz = quizData[currentIndex];
+
+            // 태그 업데이트
+            document.getElementById('tagEra').textContent = quiz.era;
+            const levelMap = {
+                elementary: "초등 기초",
+                middle: "중학 심화",
+                high: "고등 심화",
+                suneung: "수능 대비"
+            };
+            document.getElementById('tagLevel').textContent = levelMap[quiz.level];
+            document.getElementById('eraDisplay').textContent = quiz.era;
+
+            // 문제 텍스트
+            document.getElementById('questionText').textContent = quiz.q;
+
+            // 선택지
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            quiz.options.forEach((option, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => selectAnswer(idx, quiz);
+                container.appendChild(btn);
+            });
+
+            // 피드백 리셋
+            document.getElementById('feedbackBox').classList.remove('show', 'correct', 'incorrect');
+            document.getElementById('nextBtn').classList.remove('show');
+
+            // 진행도 업데이트
+            const progress = currentIndex + 1;
+            document.getElementById('progressDisplay').textContent = `${progress}/${quizData.length}`;
+            document.getElementById('correctDisplay').textContent = correctCount;
+            const accuracy = progress > 0 ? Math.round((correctCount / progress) * 100) : 0;
+            document.getElementById('accuracyDisplay').textContent = accuracy + '%';
+        }
+
+        // ========== 답변 선택 ==========
+        function selectAnswer(selectedIdx, quiz) {
+            if (answered) return;
+            answered = true;
+
+            const correctIdx = quiz.correct;
+            const buttons = document.querySelectorAll('.option-btn');
+            const isCorrect = selectedIdx === correctIdx;
+
+            // 버튼 상태 업데이트
+            buttons.forEach((btn, idx) => {
+                if (idx === correctIdx) {
+                    btn.classList.add('correct');
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+                btn.disabled = true;
+            });
+
+            // 정답 카운트
+            if (isCorrect) {
+                correctCount++;
+            }
+
+            // 피드백 표시
+            showFeedback(isCorrect, quiz, selectedIdx);
+
+            // 다음 버튼 표시
+            setTimeout(() => {
+                document.getElementById('nextBtn').classList.add('show');
+            }, 500);
+
+            // 통계 업데이트
+            const progress = currentIndex + 1;
+            document.getElementById('correctDisplay').textContent = correctCount;
+            const accuracy = Math.round((correctCount / progress) * 100);
+            document.getElementById('accuracyDisplay').textContent = accuracy + '%';
+        }
+
+        // ========== 피드백 표시 ==========
+        function showFeedback(isCorrect, quiz, selectedIdx) {
+            const box = document.getElementById('feedbackBox');
+            const title = document.getElementById('feedbackTitle');
+            const body = document.getElementById('feedbackBody');
+
+            if (isCorrect) {
+                box.className = 'feedback show correct';
+                title.textContent = '✓ 정답입니다! 완벽해요!';
+                body.innerHTML = `
+                    <div class="feedback-item"><strong>정답:</strong> ${quiz.options[quiz.correct]}</div>
+                    <div class="feedback-item"><strong>📚 설명:</strong> ${quiz.explain}</div>
+                    <div class="feedback-item"><strong>💡 핵심:</strong> ${quiz.why}</div>
+                `;
+            } else {
+                box.className = 'feedback show incorrect';
+                title.textContent = '✗ 아쉬워요! 틀렸습니다.';
+                body.innerHTML = `
+                    <div class="feedback-item"><strong>당신의 답:</strong> ${quiz.options[selectedIdx]}</div>
+                    <div class="feedback-item"><strong>정답:</strong> ${quiz.options[quiz.correct]}</div>
+                    <div class="feedback-item"><strong>📚 설명:</strong> ${quiz.explain}</div>
+                    <div class="feedback-item"><strong>❌ 왜 틀렸나:</strong> "${quiz.options[selectedIdx]}"는 잘못된 답입니다. ${quiz.why}</div>
+                    <div class="feedback-item"><strong>💡 다음에 기억:</strong> "${quiz.options[quiz.correct]}"가 정답입니다!</div>
+                `;
+            }
+        }
+
+        // ========== 다음 문제 ==========
+        function goNextQuestion() {
+            currentIndex++;
+            loadQuestion();
+        }
+
+        // ========== 완료 화면 ==========
+        function showCompletion() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('completionScreen').classList.add('show');
+
+            const accuracy = Math.round((correctCount / quizData.length) * 100);
+            document.getElementById('finalScore').textContent = `${correctCount}/${quizData.length} (${accuracy}%)`;
+
+            let message = '';
+            if (accuracy >= 90) message = '완벽합니다! 🏆 한국 역사의 대가입니다!';
+            else if (accuracy >= 80) message = '매우 좋습니다! 💪 조금 더 노력하면 완벽해집니다!';
+            else if (accuracy >= 70) message = '좋습니다! 📚 다시 한 번 반복하세요!';
+            else message = '화이팅! 🚀 차근차근 다시 학습해봅시다!';
+
+            document.getElementById('finalMessage').textContent = message;
+        }
+
+        // ========== 초기화 ==========
+        function resetQuiz() {
+            currentIndex = 0;
+            correctCount = 0;
+            answered = false;
+            document.getElementById('quizScreen').style.display = 'block';
+            document.getElementById('completionScreen').classList.remove('show');
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>

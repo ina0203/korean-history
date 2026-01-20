@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제인이의 한국 역사 완전 정복 - 메인 포탈</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .module-header {
+            padding: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.5em;
+            color: white;
+        }
+
+        .module-card:nth-child(1) .module-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .module-card:nth-child(2) .module-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .module-card:nth-child(3) .module-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .module-card:nth-child(4) .module-header {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .module-body {
+            padding: 25px;
+        }
+
+        .module-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .module-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .module-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .module-features {
+            list-style: none;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .module-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .module-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .module-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .module-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .learning-path {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .learning-path h2 {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .path-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: white;
+            color: #667eea;
+            border-radius: 50%;
+            line-height: 50px;
+            font-weight: 700;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            margin-top: 50px;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        footer p {
+            margin: 10px 0;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .path-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ 제인이의 역사 수호대</h1>
+            <p>한국 역사 완전 정복 학습 시스템</p>
+            <p class="tagline">초등학교 기초부터 수능 완벽 대비까지!</p>
+        </header>
+
+        <div class="modules-grid">
+            <!-- 모듈 1: 기본 학습 -->
+            <div class="module-card">
+                <div class="module-header">📖 기본 학습</div>
+                <div class="module-body">
+                    <div class="module-icon">📚</div>
+                    <div class="module-title">제1~6장 인터랙티브 학습</div>
+                    <p class="module-description">AI 캐릭터와의 대화로 시작하는 역사 여행. 선사시대부터 근현대까지 시대별로 진행하는 학습 프로그램입니다.</p>
+                    <ul class="module-features">
+                        <li>AI 캐릭터 대화</li>
+                        <li>시각화 자료</li>
+                        <li>단계별 진행</li>
+                        <li>실시간 피드백</li>
+                    </ul>
+                    <a href="interactive-chapter.html" class="module-btn">시작하기 →</a>
+                </div>
+            </div>
+
+            <!-- 모듈 2: 무한 반복 학습 -->
+            <div class="module-card">
+                <div class="module-header">♾️ 무한 반복 모드</div>
+                <div class="module-body">
+                    <div class="module-icon">🚀</div>
+                    <div class="module-title">170개+ 문제 무한 반복</div>
+                    <p class="module-description">초등학교, 중학교, 고등학교, 수능에 나오는 모든 자료를 담은 대규모 문제 풀이. 난이도별, 시대별 필터링으로 맞춤 학습이 가능합니다.</p>
+                    <ul class="module-features">
+                        <li>170개+ 정교한 문제</li>
+                        <li>난이도별 필터링</li>
+                        <li>시대별 선택</li>
+                        <li>무한 반복 학습</li>
+                    </ul>
+                    <a href="infinite-learning.html" class="module-btn">시작하기 →</a>
+                </div>
+            </div>
+
+            <!-- 모듈 3: 통계 대시보드 -->
+            <div class="module-card">
+                <div class="module-header">📊 학습 통계</div>
+                <div class="module-body">
+                    <div class="module-icon">📈</div>
+                    <div class="module-title">진행도 추적 및 분석</div>
+                    <p class="module-description">난이도별, 시대별 문제 분포를 한눈에 파악하고, 학습 경로를 추적합니다. 실시간 진행도 통계로 동기 부여를 지속합니다.</p>
+                    <ul class="module-features">
+                        <li>난이도별 분석</li>
+                        <li>시대별 분포</li>
+                        <li>학습 경로 추천</li>
+                        <li>성취도 추적</li>
+                    </ul>
+                    <a href="statistics.html" class="module-btn">확인하기 →</a>
+                </div>
+            </div>
+
+            <!-- 모듈 4: AI 대화 mentor -->
+            <div class="module-card">
+                <div class="module-header">🤖 AI 역사 멘토</div>
+                <div class="module-body">
+                    <div class="module-icon">💬</div>
+                    <div class="module-title">역사 인물과의 대화</div>
+                    <p class="module-description">단군왕검, 광개토대왕, 세종대왕 등 위대한 역사 인물들과의 대화를 통해 살아있는 역사를 배웁니다.</p>
+                    <ul class="module-features">
+                        <li>7명 역사 인물</li>
+                        <li>실제 대사</li>
+                        <li>깊이있는 질문</li>
+                        <li>맞춤형 조언</li>
+                    </ul>
+                    <a href="history-ai.html" class="module-btn">시작하기 →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2 class="stats-title">📊 시스템 현황</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">170+</div>
+                    <div class="stat-label">문제 데이터베이스</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">7개</div>
+                    <div class="stat-label">시대 커버리지</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4단계</div>
+                    <div class="stat-label">난이도 시스템</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">반복 학습</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="learning-path">
+            <h2>🎯 추천 학습 경로</h2>
+            <div class="path-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">기본 학습</div>
+                    <div class="step-description">제1~6장 인터랙티브 학습으로 기초 탄탄히</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">초등 기초 정복</div>
+                    <div class="step-description">무한 반복 모드 - 초등 난이도 필터</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">중학 심화</div>
+                    <div class="step-description">무한 반복 모드 - 중학 난이도 필터</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">고등 완벽</div>
+                    <div class="step-description">무한 반복 모드 - 고등 난이도 필터</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">수능 대비</div>
+                    <div class="step-description">무한 반복 모드 - 수능 난이도 필터</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-title">완전 정복</div>
+                    <div class="step-description">통계로 확인하는 최종 성취도 달성</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🛡️ 역사 수호대: 타임 리프 - 제인이의 한국 역사 완전 정복 학습 시스템</p>
+            <p>초등학교 기초부터 수능 완벽 대비까지 모든 자료를 담은 포괄적 학습 플랫폼</p>
+            <p style="margin-top: 20px; opacity: 0.8;">© 2026 역사 수호대 | 지속적으로 발전하는 학습 시스템</p>
+        </footer>
+    </div>
+</body>
+</html>

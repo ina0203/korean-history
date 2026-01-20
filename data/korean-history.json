@@ -1,0 +1,179 @@
+{
+  "periods": [
+    {
+      "id": 1,
+      "name": "고대",
+      "era": "삼국시대",
+      "start_year": -2333,
+      "end_year": 668,
+      "description": "한반도의 고대 시대로 고조선, 부여, 삼국(고구려, 백제, 신라)이 존재한 시기",
+      "level": 1
+    },
+    {
+      "id": 2,
+      "name": "통일신라",
+      "era": "남북국",
+      "start_year": 668,
+      "end_year": 935,
+      "description": "신라가 한반도를 통일한 시기와 발해가 존재한 남북국 시대",
+      "level": 1
+    },
+    {
+      "id": 3,
+      "name": "고려",
+      "era": "중세",
+      "start_year": 918,
+      "end_year": 1392,
+      "description": "왕건이 건국한 고려의 시대로 팔만대장경, 팔만장경판 등 문화유산이 풍부",
+      "level": 2
+    },
+    {
+      "id": 4,
+      "name": "조선",
+      "era": "중세-근세",
+      "start_year": 1392,
+      "end_year": 1910,
+      "description": "이성계가 건국한 조선으로 한글 창제, 과학 발전 등 문화의 황금기",
+      "level": 2
+    },
+    {
+      "id": 5,
+      "name": "일제강점기",
+      "era": "근현대",
+      "start_year": 1910,
+      "end_year": 1945,
+      "description": "일본의 식민지 통치 시기로 독립운동과 저항의 시대",
+      "level": 3
+    },
+    {
+      "id": 6,
+      "name": "현대",
+      "era": "현대",
+      "start_year": 1945,
+      "end_year": 2024,
+      "description": "광복 이후 대한민국의 건설과 민주화, 경제 성장의 시대",
+      "level": 3
+    }
+  ],
+  "events": [
+    {
+      "period_id": 1,
+      "year": -2333,
+      "title": "고조선 건국",
+      "description": "단군이 고조선을 건국한 것으로 기록되는 시점",
+      "importance": 10
+    },
+    {
+      "period_id": 1,
+      "year": 37,
+      "title": "고구려 건국",
+      "description": "주몽이 고구려를 건국",
+      "importance": 9
+    },
+    {
+      "period_id": 1,
+      "year": 18,
+      "title": "백제 건국",
+      "description": "온조가 백제를 건국",
+      "importance": 9
+    },
+    {
+      "period_id": 1,
+      "year": 57,
+      "title": "신라 건국",
+      "description": "박혁거세가 신라를 건국",
+      "importance": 9
+    },
+    {
+      "period_id": 2,
+      "year": 668,
+      "title": "삼국통일",
+      "description": "신라가 한반도를 통일한 사건",
+      "importance": 10
+    },
+    {
+      "period_id": 3,
+      "year": 918,
+      "title": "고려 건국",
+      "description": "왕건이 고려를 건국",
+      "importance": 10
+    },
+    {
+      "period_id": 3,
+      "year": 1234,
+      "title": "팔만대장경 완성",
+      "description": "팔만대장경 목판의 조성 완성으로 인쇄 문화의 발전",
+      "importance": 8
+    },
+    {
+      "period_id": 4,
+      "year": 1392,
+      "title": "조선 건국",
+      "description": "이성계가 조선을 건국",
+      "importance": 10
+    },
+    {
+      "period_id": 4,
+      "year": 1443,
+      "title": "한글 창제",
+      "description": "세종대왕이 한글을 창제하여 훈민정음 반포",
+      "importance": 10
+    },
+    {
+      "period_id": 4,
+      "year": 1592,
+      "title": "임진왜란",
+      "description": "도요토미 히데요시의 도요토미 도요시의 일본군이 조선을 침략",
+      "importance": 9
+    },
+    {
+      "period_id": 5,
+      "year": 1910,
+      "title": "한일 병합",
+      "description": "일본이 조선을 병합하여 일제강점기 시작",
+      "importance": 10
+    },
+    {
+      "period_id": 5,
+      "year": 1919,
+      "title": "3.1 운동",
+      "description": "독립선언서를 발표하고 전국적인 독립운동 전개",
+      "importance": 10
+    },
+    {
+      "period_id": 5,
+      "year": 1945,
+      "title": "광복",
+      "description": "일제로부터 해방되어 대한민국 독립",
+      "importance": 10
+    },
+    {
+      "period_id": 6,
+      "year": 1948,
+      "title": "대한민국 정부 수립",
+      "description": "대한민국 정부 수립 선포",
+      "importance": 10
+    },
+    {
+      "period_id": 6,
+      "year": 1950,
+      "title": "한국전쟁 시작",
+      "description": "북한의 남침으로 한국전쟁 발발",
+      "importance": 10
+    },
+    {
+      "period_id": 6,
+      "year": 1988,
+      "title": "서울 올림픽",
+      "description": "서울에서 올림픽 개최로 국제적 위상 제고",
+      "importance": 7
+    },
+    {
+      "period_id": 6,
+      "year": 1997,
+      "title": "IMF 외환위기",
+      "description": "아시아 금융 위기로 인한 한국의 경제 위기",
+      "importance": 8
+    }
+  ]
+}

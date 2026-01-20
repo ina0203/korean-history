@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ 역사 수호대: 타임 리프 - 제1~3장</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #ff6b6b;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .chapter-section {
+            display: none;
+        }
+
+        .chapter-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chapter-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .chapter-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .chapter-level {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .question-card {
+            background: #fffbe6;
+            border: 3px solid #ffe58f;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option-btn.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .feedback {
+            display: none;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            line-height: 1.8;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .explanation-text {
+            font-size: 0.95em;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .tip-box {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .tip-box strong {
+            color: #ff6b6b;
+        }
+
+        .formula-box {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .completion-message {
+            display: none;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .completion-message h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .completion-message p {
+            font-size: 1.1em;
+        }
+
+        .chapter-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .chapter-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .chapter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .chapter-btn:hover {
+            border-color: #667eea;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .deep-dive-section {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .deep-dive-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .deep-dive-content {
+            font-size: 0.95em;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .deep-dive-content li {
+            margin: 8px 0;
+            margin-left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .chapter-title {
+                font-size: 1.3em;
+            }
+
+            .question-text {
+                font-size: 1.05em;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 헤더 -->
+    <header>
+        <h1>🛡️ 역사 수호대: 타임 리프</h1>
+        <p>제1~6장: 선사시대에서 근현대까지, 우리 역사의 모든 것을 정복하라!</p>
+    </header>
+
+    <!-- 통계 바 -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">현재 장</div>
+            <div class="stat-value" id="currentChapter">제1장</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="chapterProgress" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">문제 진행</div>
+            <div class="stat-value" id="questionCount">1/18</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="overallProgress" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">정답 개수</div>
+            <div class="stat-value" id="correctCount">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">정확도</div>
+            <div class="stat-value" id="accuracy">0%</div>
+        </div>
+    </div>
+
+    <!-- 콘텐츠 -->
+    <div class="content">
+        <!-- 제1장: 선사시대와 고조선 -->
+        <div class="chapter-section active" id="chapter1">
+            <div class="chapter-header">
+                <div class="chapter-title">🏛️ 제1장: 선사 시대와 고조선</div>
+                <div class="chapter-level">초등학교 기초 → 수능 심화</div>
+            </div>
+
+            <!-- 질문 1 -->
+            <div id="q1-container">
+                <div class="question-card">
+                    <div class="question-text">❓ Q1. 단군 할아버지가 세운 우리나라 최초의 나라 이름은 무엇일까요?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkAnswer(1, 0, 1)">① 조선</button>
+                        <button class="option-btn" onclick="checkAnswer(1, 0, 2)">② 고조선</button>
+                        <button class="option-btn" onclick="checkAnswer(1, 0, 3)">③ 신라</button>
+                        <button class="option-btn" onclick="checkAnswer(1, 0, 4)">④ 백제</button>
+                    </div>
+                </div>
+                <div class="feedback" id="f1-0">
+                    <div class="feedback-title">🎉 정답입니다! 수호 성공!</div>
+                    <div class="explanation-text">
+                        <strong>정답: ② 고조선</strong><br><br>
+                        고조선은 기원전 2333년에 단군왕검이 건국한 우리 민족 최초의 국가입니다. "고(古)"자는 "옛"이라는 뜻으로, 나중에 세워진 조선(1392년)과 구분하기 위해 붙인 이름입니다.
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 시험 팁:</strong> 연대 기억법 - "2333년 = 23세기 + 33 = 고조선" (역사 암기 팁)
+                    </div>
+                </div>
+                <div class="feedback incorrect" id="f1-0-wrong">
+                    <div class="feedback-title">❌ 다시 한번 생각해보세요!</div>
+                    <div class="explanation-text">
+                        힌트: 이름에 "옛 고(古)"자가 들어있습니다. 우리 역사에서 "고"자가 붙은 나라는 고조선, 고구려, 고려입니다. 이 중에서 가장 먼저 세워진 나라를 찾아보세요!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제2장: 삼국시대 -->
+        <div class="chapter-section" id="chapter2">
+            <div class="chapter-header">
+                <div class="chapter-title">⚔️ 제2장: 삼국 시대</div>
+                <div class="chapter-level">누가누가 제일 넓나? - 땅따먹기 게임</div>
+            </div>
+
+            <!-- 질문 2 -->
+            <div id="q2-container">
+                <div class="question-card">
+                    <div class="question-text">❓ Q2. 4세기 백제의 전성기를 이끌었으며, 한강 유역을 장악하고 바다를 통해 일본까지 무역을 확대한 왕은?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkAnswer(2, 0, 1)">① 광개토대왕</button>
+                        <button class="option-btn" onclick="checkAnswer(2, 0, 2)">② 진흥왕</button>
+                        <button class="option-btn" onclick="checkAnswer(2, 0, 3)">③ 근초고왕</button>
+                        <button class="option-btn" onclick="checkAnswer(2, 0, 4)">④ 무열왕</button>
+                    </div>
+                </div>
+                <div class="feedback" id="f2-0">
+                    <div class="feedback-title">🎉 정답입니다! 수호 성공!</div>
+                    <div class="explanation-text">
+                        <strong>정답: ③ 근초고왕</strong><br><br>
+                        근초고왕(345~375년)은 백제 제13대 왕으로, 한강 유역을 완전히 장악하고 대외적으로 해상 무역을 확대했습니다. 특히 신라 보다 한 단계 앞서 한강을 차지한 전략가입니다. 이 시기 백제는 "해상제국"이라 불렸습니다.
+                    </div>
+                    <div class="deep-dive-section">
+                        <div class="deep-dive-title">📊 심화학습: 삼국의 전성기 순서 (수능 단골 문제)</div>
+                        <div class="deep-dive-content">
+                            <ul>
+                                <li><strong>4세기 백제:</strong> 근초고왕 - 한강 차지 (최초 한강 보유)</li>
+                                <li><strong>5세기 고구려:</strong> 광개토대왕&장수왕 - 한강 차지 (백제에서 빼앗음)</li>
+                                <li><strong>6세기 신라:</strong> 진흥왕 - 한강 차지 (고구려에서 빼앗음, 삼국통일 발판)</li>
+                            </ul>
+                            <p><strong>수능 출제 패턴:</strong> "다음 중 한강을 처음 차지한 나라는?" → 항상 백제!</p>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 연결 학습:</strong> 한강의 중요성을 이해하면, 왜 삼국이 계속 싸웠는지 알 수 있습니다. (지정학적 사고)
+                    </div>
+                </div>
+                <div class="feedback incorrect" id="f2-0-wrong">
+                    <div class="feedback-title">❌ 다시 한번 생각해보세요!</div>
+                    <div class="explanation-text">
+                        힌트: 백제는 "바다의 힘"으로 발전했습니다. 이름 속 한자를 보면 "근(近=가까운) + 초(初=처음) + 고(古=옛) + 왕(王)" = "처음으로 가까워진 왕"이라는 뜻이 숨어있습니다. 그 왕이 한강 유역을 처음 차지한 백제의 전성기 왕입니다!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제3장: 남북국시대 (석굴암) -->
+        <div class="chapter-section" id="chapter3">
+            <div class="chapter-header">
+                <div class="chapter-title">🏛️ 제3장: 남북국 시대</div>
+                <div class="chapter-level">신라와 발해, 그리고 과학의 결정정</div>
+            </div>
+
+            <!-- 질문 3 -->
+            <div id="q3-container">
+                <div class="question-card">
+                    <div class="question-text">❓ Q3. 신라의 수도 경주에 있는 인공 동굴로, 수학과 기하학의 조화로 만들어진 불교 예술의 최고봉은 무엇일까요?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkAnswer(3, 0, 1)">① 천마총</button>
+                        <button class="option-btn" onclick="checkAnswer(3, 0, 2)">② 불국사</button>
+                        <button class="option-btn" onclick="checkAnswer(3, 0, 3)">③ 석굴암</button>
+                        <button class="option-btn" onclick="checkAnswer(3, 0, 4)">④ 미륵사지 석탑</button>
+                    </div>
+                </div>
+                <div class="feedback" id="f3-0">
+                    <div class="feedback-title">🎉 정답입니다! 수호 성공!</div>
+                    <div class="explanation-text">
+                        <strong>정답: ③ 석굴암</strong><br><br>
+                        석굴암은 신라 경덕왕 때(774년경)에 대승(또는 애징)이 중심이 되어 약 20년에 걸쳐 완성한 인공 석조 사찰입니다. 토함산의 산체를 깎아내어 만든 이 구조물은 단순한 건축물을 넘어 **'수학과 천문학의 종합 교과서'**입니다.
+                    </div>
+
+                    <!-- 석굴암 심화 설명 -->
+                    <div class="deep-dive-section">
+                        <div class="deep-dive-title">🔬 심화학습: 석굴암의 수학적 설계</div>
+                        <div class="deep-dive-content">
+                            <p><strong>1️⃣ 기하학적 설계 원리</strong></p>
+                            <p>석굴암의 주실(본존불이 앉아있는 방)은 완벽한 원형으로 설계되었습니다.</p>
+                            <div class="formula-box">
+                                • 주실의 반지름을 R이라 하면<br>
+                                • 천장의 높이 ≈ R<br>
+                                • 내부 석상의 배치 = R의 배수 또는 R×√2의 비율<br>
+                                • 이는 시각적 완벽함과 음향 효과를 동시에 만족
+                            </div>
+
+                            <p><strong>2️⃣ 습도 조절 시스템 (선진 과학기술)</strong></p>
+                            <div class="formula-box">
+                                • 석굴암 바닥 하층에 차가운 샘물 흐름<br>
+                                • 습한 공기 → 아래로 이동 → 물줄기로 배출<br>
+                                • 결과: 1,300년이 지난 지금도 본존불이 부식되지 않음<br>
+                                • 원리: 대류(convection)의 자연스러운 활용
+                            </div>
+
+                            <p><strong>3️⃣ 천문학적 설계 (해의 각도 계산)</strong></p>
+                            <div class="formula-box">
+                                • 동쪽 입구를 통해 해가 뜨는 방향으로 정렬<br>
+                                • 동춘분(春分), 동하지(夏至) 때만 햇빛이 본존불의 이마에 닿도록 설계<br>
+                                • 이 빛이 수정 구슬을 거쳐 석굴 내부를 밝힘<br>
+                                • 이는 "태양의 각도 계산"이 얼마나 정교했는지 증명
+                            </div>
+
+                            <p><strong>4️⃣ 수능에 자주 나오는 표현들</strong></p>
+                            <ul>
+                                <li>"인공 석굴" + "기하학적" = 석굴암 (수학 키워드와 연결)</li>
+                                <li>"본존불의 미소" + "수정" = 석굴암의 조명 설계</li>
+                                <li>"습도 조절" + "자연 과학" = 선진 기술 증거</li>
+                                <li>"신라의 과학력 증명" = 석굴암 최종 결론</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong>💡 시험 대비 꿀팁:</strong><br>
+                        1. "인공"과 "수학" 키워드 동시 출현 → 무조건 석굴암<br>
+                        2. 사찰 이름 구분: 불교 건물 = "암/사", 무덤 = "총/릉"<br>
+                        3. 불국사와 석굴암은 같은 시기지만 다른 유산 (불국사=목재, 석굴암=돌)<br>
+                        4. 고등 수능: "석굴암이 보여주는 신라의 과학 수준" 논술형 문제 단골
+                    </div>
+                </div>
+
+                <div class="feedback incorrect" id="f3-0-wrong">
+                    <div class="feedback-title">❌ 다시 한번 생각해보세요!</div>
+                    <div class="explanation-text">
+                        힌트: "인공적으로 산을 깎아 만든" + "수학과 과학의 결정" = ?<br><br>
+                        • 천마총: 무덤에서 나온 그림 (미술 자료)<br>
+                        • 불국사: 절 건물 (나무로 만든 건축물)<br>
+                        • 미륵사지: 절의 탑 (건축물)<br>
+                        • 석굴암: 산을 깎아 만든 인공 동굴 (공학 기술)<br><br>
+                        "산을 깎아"라는 표현이 나오면 석굴암을 생각하세요!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제4장: 고려 -->
+        <div class="chapter-section" id="chapter4">
+            <div class="chapter-header">
+                <div class="chapter-title">🎨 제4장: 고려 시대</div>
+                <div class="chapter-level">천 년의 꿈, 팔만대장경과 고려청자</div>
+            </div>
+
+            <!-- 질문 7 -->
+            <div id="q4-container">
+                <div class="question-card">
+                    <div class="question-text">❓ Q7. 고려 시대 약 75년에 걸쳐 제작된, 불교의 모든 경전을 목판에 새긴 문화유산의 이름은?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkAnswer(4, 0, 1)">① 고려청자</button>
+                        <button class="option-btn" onclick="checkAnswer(4, 0, 2)">② 팔만대장경</button>
+                        <button class="option-btn" onclick="checkAnswer(4, 0, 3)">③ 미륵사지 석탑</button>
+                        <button class="option-btn" onclick="checkAnswer(4, 0, 4)">④ 팔만대장경 목판</button>
+                    </div>
+                </div>
+                <div class="feedback" id="f4-0">
+                    <div class="feedback-title">🎉 정답입니다! 수호 성공!</div>
+                    <div class="explanation-text">
+                        <strong>정답: ② 팔만대장경</strong><br><br>
+                        팔만대장경은 AD 1011년부터 1087년까지 약 75년에 걸쳐 제작된 목판 인쇄본입니다. 약 80,000장의 목판에 약 5,200만 자를 새겨 불교의 모든 경전을 담았습니다. 이는 거란의 침입을 부처님의 힘으로 막기 위한 정신적 무기였습니다.
+                    </div>
+                    <div class="deep-dive-section">
+                        <div class="deep-dive-title">📖 심화학습: 팔만대장경의 의미</div>
+                        <div class="deep-dive-content">
+                            <ul>
+                                <li><strong>규모:</strong> 목판 약 81,258장, 글자 수 약 5,200만 자</li>
+                                <li><strong>제작 목적:</strong> 거란 침입으로부터 나라를 지키기 위한 종교적 노력</li>
+                                <li><strong>기술:</strong> 인쇄술의 정교함 (목판 인쇄의 최고 수준)</li>
+                                <li><strong>보존:</strong> 경주 해인사에 보관 (유네스코 세계기록유산)</li>
+                                <li><strong>현대적 의미:</strong> 공동체 노력의 결정, 문화적 자존심</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 시험 팁:</strong> "약 75년", "약 81,000장" → 팔만대장경 (수능 단골 수치)
+                    </div>
+                </div>
+                <div class="feedback incorrect" id="f4-0-wrong">
+                    <div class="feedback-title">❌ 다시 한번 생각해보세요!</div>
+                    <div class="explanation-text">
+                        힌트: "목판에 새긴 경전" = 팔만대장경<br>
+                        • 고려청자: 도자기 (예술품)<br>
+                        • 팔만대장경: 인쇄본 (문화유산)<br>
+                        • 미륵사지 석탑: 건축물<br><br>
+                        "약 75년", "경전", "목판" 키워드가 나오면 팔만대장경입니다!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제5장: 조선 -->
+        <div class="chapter-section" id="chapter5">
+            <div class="chapter-header">
+                <div class="chapter-title">🏯 제5장: 조선 시대</div>
+                <div class="chapter-level">한글을 만든 과학 문명의 나라</div>
+            </div>
+
+            <!-- 질문 10 -->
+            <div id="q5-container">
+                <div class="question-card">
+                    <div class="question-text">❓ Q10. 세종대왕이 '훈민정음'이라는 이름으로 만든 우리 고유의 문자의 기본 글자는 몇 개일까요?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkAnswer(5, 0, 1)">① 8개</button>
+                        <button class="option-btn" onclick="checkAnswer(5, 0, 2)">② 10개</button>
+                        <button class="option-btn" onclick="checkAnswer(5, 0, 3)">③ 14개</button>
+                        <button class="option-btn" onclick="checkAnswer(5, 0, 4)">④ 24개</button>
+                    </div>
+                </div>
+                <div class="feedback" id="f5-0">
+                    <div class="feedback-title">🎉 정답입니다! 수호 성공!</div>
+                    <div class="explanation-text">
+                        <strong>정답: ③ 14개</strong><br><br>
+                        한글은 14개의 기본 글자로 이루어져 있습니다. 자음 10개(ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ, ㅈ, ㅉ)와 모음 4개(ㅏ, ㅑ, ㅓ, ㅕ)로 구성되어 있습니다. 이 14개 글자만 배우면 모든 한국말을 표현할 수 있습니다!
+                    </div>
+                    <div class="deep-dive-section">
+                        <div class="deep-dive-title">🔬 심화학습: 한글의 과학적 설계</div>
+                        <div class="deep-dive-content">
+                            <p><strong>1️⃣ 음성학 기반 설계</strong></p>
+                            <ul>
+                                <li>자음: 발음할 때의 입 모양을 따라 설계</li>
+                                <li>ㄱ = 혀가 입천장에 닿는 모양 → '가'</li>
+                                <li>ㄴ = 혀가 앞니 뒤에 있는 모양 → '나'</li>
+                                <li>ㅁ = 입이 다물어진 모양 → '마'</li>
+                            </ul>
+                            <p><strong>2️⃣ 배우기 쉬운 원리</strong></p>
+                            <ul>
+                                <li>한자: 수천 개를 배워야 함</li>
+                                <li>한글: 14개만 배우면 모든 한국말 표현 가능</li>
+                                <li>세종대왕 당시: "똑똑한 사람이 한 달이면 배울 수 있다"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 시험 팁:</strong> "14개" + "기본 글자" → 한글 기본 (수능 필수 암기)
+                    </div>
+                </div>
+                <div class="feedback incorrect" id="f5-0-wrong">
+                    <div class="feedback-title">❌ 다시 한번 생각해보세요!</div>
+                    <div class="explanation-text">
+                        힌트: 자음(10개) + 모음(4개) = ?<br><br>
+                        한글은 매우 과학적으로 설계된 문자입니다. 세종대왕이 이 숫자로 정한 것은 이 수가 배우기에 가장 완벽하다고 생각했기 때문입니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제6장: 근현대 -->
+        <div class="chapter-section" id="chapter6">
+            <div class="chapter-header">
+                <div class="chapter-title">🌍 제6장: 근현대</div>
+                <div class="chapter-level">독립을 위해 목숨을 바친 시대</div>
+            </div>
+
+            <!-- 질문 13 -->
+            <div id="q6-container">
+                <div class="question-card">
+                    <div class="question-text">❓ Q13. 3·1 운동이 일어난 연도와 그 의미를 올바르게 설명한 것은?</div>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkAnswer(6, 0, 1)">① 1910년, 일제강점기 시작</button>
+                        <button class="option-btn" onclick="checkAnswer(6, 0, 2)">② 1919년, 전국적 독립운동</button>
+                        <button class="option-btn" onclick="checkAnswer(6, 0, 3)">③ 1945년, 광복</button>
+                        <button class="option-btn" onclick="checkAnswer(6, 0, 4)">④ 1948년, 대한민국 정부 수립</button>
+                    </div>
+                </div>
+                <div class="feedback" id="f6-0">
+                    <div class="feedback-title">🎉 정답입니다! 수호 성공!</div>
+                    <div class="explanation-text">
+                        <strong>정답: ② 1919년, 전국적 독립운동</strong><br><br>
+                        1919년 3월 1일, 전국의 한국인들이 "대한독립만세!"를 외치며 거리로 나갔습니다. 약 200만 명(당시 인구 1,700만 명의 12%)이 참여한 전국적 독립운동이었습니다. 이를 통해 세계에 "한국은 아직 살아있다"는 것을 알렸습니다.
+                    </div>
+                    <div class="deep-dive-section">
+                        <div class="deep-dive-title">📚 심화학습: 3·1 운동의 영향</div>
+                        <div class="deep-dive-content">
+                            <ul>
+                                <li><strong>국내 영향:</strong> 독립운동 확산, 독립군 결성, 임시정부 수립</li>
+                                <li><strong>국제 영향:</strong> 파리평화회담 등에서 한국 독립 논의</li>
+                                <li><strong>영웅:</strong> 유관순 (18세, 천안 출신, 고문 중 사망)</li>
+                                <li><strong>현대 의미:</strong> 매년 3월 1일, 삼일절로 기념</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <strong>💡 시험 팁:</strong> "1919년" + "3월 1일" + "만세" → 3·1 운동 (수능 필수)
+                    </div>
+                </div>
+                <div class="feedback incorrect" id="f6-0-wrong">
+                    <div class="feedback-title">❌ 다시 한번 생각해보세요!</div>
+                    <div class="explanation-text">
+                        년도 정리:<br>
+                        • 1910년: 일제강점기 시작<br>
+                        • 1919년: 3·1 운동 (전국적 독립운동)<br>
+                        • 1945년: 광복 (일제강점기 끝)<br>
+                        • 1948년: 대한민국 정부 수립<br><br>
+                        "1919년" + "3월 1일" = 3·1 운동!
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="completion-message" id="completionMsg">
+            <h2>🎉 제인 수호대장, 축하합니다!</h2>
+            <p>제1~6장(선사시대→고조선→삼국→남북국→고려→조선→근현대)을 모두 정복했습니다!</p>
+            <p style="margin-top: 15px; font-size: 0.95em;">이제 당신은 한국 역사 완전 정복자로 임명됩니다. 🏅</p>
+        </div>
+
+        <!-- 버튼 그룹 -->
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="nextQuestion()">다음 문제 →</button>
+            <button class="btn btn-secondary" onclick="resetQuiz()">처음부터 다시</button>
+        </div>
+
+        <!-- 스코어 표시 -->
+        <div class="score-display" id="scoreDisplay"></div>
+    </div>
+</div>
+
+<script>
+    // 퀴즈 데이터
+    const quizData = [
+        // 제1장: 선사시대와 고조선
+        {
+            chapter: 1,
+            question: "단군 할아버지가 세운 우리나라 최초의 나라 이름은 무엇일까요?",
+            correct: 2, // ②번 인덱스
+            explanation: "고조선은 기원전 2333년에 단군왕검이 건국한 우리 민족 최초의 국가입니다.",
+            tips: "연대 기억법 - 2333년 = 고조선"
+        },
+        {
+            chapter: 1,
+            question: "(심화) 고조선의 '8조법'이 만들어진 이유는 무엇일까요?",
+            correct: 2,
+            explanation: "8조법은 고조선이 국가의 법치주의를 확립했음을 보여줍니다.",
+            tips: "법령이 있다 = 체계적인 국가 = 고조선이 진짜 나라"
+        },
+        {
+            chapter: 1,
+            question: "(수능형) 다음 중 신석기 시대의 주요 발전은 무엇인가?",
+            correct: 3,
+            explanation: "신석기 시대는 농경이 시작되고 정착 생활이 이루어진 시대입니다.",
+            tips: "신석기 = 새로운 돌 시대 = 신기술 발명 (토기, 농업)"
+        },
+        // 제2장: 삼국시대
+        {
+            chapter: 2,
+            question: "4세기 백제의 전성기를 이끌었으며, 한강 유역을 장악한 왕은?",
+            correct: 3,
+            explanation: "근초고왕은 백제의 제13대 왕으로, 한강을 처음 차지한 전략가입니다.",
+            tips: "한강 최초 보유국 = 백제 근초고왕 (수능 단골)"
+        },
+        {
+            chapter: 2,
+            question: "(심화) 고구려 광개토대왕이 영토를 크게 확장할 수 있었던 이유는?",
+            correct: 1,
+            explanation: "만주의 광활한 땅과 기마 전술을 활용한 군사력이 그 기반이었습니다.",
+            tips: "위치(만주) + 기술(기마) = 강국"
+        },
+        {
+            chapter: 2,
+            question: "(수능형) 삼국의 전성기 순서를 올바르게 나열한 것은?",
+            correct: 2,
+            explanation: "백제(4세기) → 고구려(5세기) → 신라(6세기)의 순서입니다.",
+            tips: "BAN(바나나) = 백구신 = 백제→고구려→신라"
+        },
+        // 제3장: 남북국시대
+        {
+            chapter: 3,
+            question: "신라의 수도 경주에 있는 인공 동굴로, 수학과 기하학의 조화인 곳은?",
+            correct: 3,
+            explanation: "석굴암은 신라의 과학 기술을 보여주는 건축물입니다.",
+            tips: "인공 석굴 + 기하학 = 석굴암"
+        },
+        {
+            chapter: 3,
+            question: "(심화) 석굴암의 가장 중요한 과학적 특징은 무엇인가?",
+            correct: 2,
+            explanation: "습도 조절 시스템으로 1,300년 동안 부식 없이 보존되었습니다.",
+            tips: "지속성(durability) + 자연 과학 = 선진 기술"
+        },
+        {
+            chapter: 3,
+            question: "(수능형) 고구려 계승의식을 보여주는 발해의 사례는?",
+            correct: 1,
+            explanation: "발해가 일본에 보낸 외교 문서에서 자신을 '고려 국왕'이라고 칭했습니다.",
+            tips: "발해 = 고구려의 계승자 (역사 의식)"
+        },
+        // 제4장: 고려
+        {
+            chapter: 4,
+            question: "고려 시대 약 75년에 걸쳐 제작된, 불교의 모든 경전을 목판에 새긴 문화유산의 이름은?",
+            correct: 2,
+            explanation: "팔만대장경은 약 81,000장의 목판에 5,200만 자를 새긴 목판 인쇄본입니다.",
+            tips: "약 75년 + 경전 + 목판 = 팔만대장경"
+        },
+        {
+            chapter: 4,
+            question: "(심화) 팔만대장경을 만든 이유는 무엇일까요?",
+            correct: 3,
+            explanation: "거란의 침입으로부터 나라를 지키기 위해 부처님의 힘을 믿고 제작했습니다.",
+            tips: "위기 속의 신앙 = 대장경 제작"
+        },
+        {
+            chapter: 4,
+            question: "(수능형) 고려청자의 가장 특징적인 색깔은?",
+            correct: 3,
+            explanation: "고려청자는 옅은 푸른색(청색)이 특징으로, 당시 세계 최고 수준의 도자기였습니다.",
+            tips: "옅은 푸른색 = 고려청자 (색깔로 구분)"
+        },
+        // 제5장: 조선
+        {
+            chapter: 5,
+            question: "세종대왕이 '훈민정음'이라는 이름으로 만든 우리 고유의 문자의 기본 글자는 몇 개일까요?",
+            correct: 3,
+            explanation: "한글은 자음 10개와 모음 4개, 총 14개의 기본 글자로 이루어져 있습니다.",
+            tips: "14개 = 자음(10) + 모음(4)"
+        },
+        {
+            chapter: 5,
+            question: "(심화) 세종대왕이 한글을 만든 가장 중요한 이유는?",
+            correct: 2,
+            explanation: "모든 백성이 글을 배워 읽고 쓸 수 있게 하기 위함이었습니다.",
+            tips: "민본 정치 = 백성을 위한 문자"
+        },
+        {
+            chapter: 5,
+            question: "(수능형) 한글의 가장 중요한 특징은?",
+            correct: 1,
+            explanation: "한글은 음성학 원리에 기반하여 과학적으로 설계된 문자입니다.",
+            tips: "과학적 설계 = 입 모양을 따라 만든 자음"
+        },
+        // 제6장: 근현대
+        {
+            chapter: 6,
+            question: "3·1 운동이 일어난 연도와 그 의미를 올바르게 설명한 것은?",
+            correct: 2,
+            explanation: "1919년 3월 1일, 전국의 약 200만 명이 참여한 독립운동입니다.",
+            tips: "1919년 + 3월 1일 = 3·1 운동"
+        },
+        {
+            chapter: 6,
+            question: "(심화) 3·1 운동의 가장 중요한 결과는?",
+            correct: 1,
+            explanation: "세계에 '한국은 아직 살아있다'는 것을 알렸고 독립운동이 확산되었습니다.",
+            tips: "전국적 영향 + 국제적 알림 = 3·1 운동의 의미"
+        },
+        {
+            chapter: 6,
+            question: "(수능형) 일제강점기 동안 전국의 독립운동을 대표했던 여성 독립운동가는?",
+            correct: 3,
+            explanation: "유관순은 3·1 운동에 참여했으며 고문 중 18세의 나이에 순국했습니다.",
+            tips: "여성 독립운동가 + 18세 + 천안 = 유관순"
+        }
+    ];
+
+    let currentQuestion = 0;
+    let correctAnswers = 0;
+    let answered = false;
+
+    function checkAnswer(chapter, qIndex, selectedOption) {
+        if (answered) return;
+        answered = true;
+
+        const quizIndex = (chapter - 1) * 3 + qIndex;
+        const quiz = quizData[quizIndex];
+        const feedbackId = `f${chapter}-${qIndex}`;
+        const feedbackEl = document.getElementById(feedbackId);
+        const feedbackWrongEl = document.getElementById(`${feedbackId}-wrong`);
+
+        const buttons = document.querySelectorAll(`#q${chapter}-container .option-btn`);
+        
+        if (selectedOption === quiz.correct) {
+            buttons[selectedOption - 1].classList.add('correct');
+            feedbackEl.classList.add('show', 'correct');
+            correctAnswers++;
+        } else {
+            buttons[selectedOption - 1].classList.add('incorrect');
+            buttons[quiz.correct - 1].classList.add('correct');
+            feedbackWrongEl.classList.add('show', 'incorrect');
+        }
+
+        updateStats();
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function updateStats() {
+        const total = quizData.length;
+        const current = currentQuestion + 1;
+        
+        document.getElementById('questionCount').textContent = `${current}/${total}`;
+        document.getElementById('overallProgress').style.width = `${(current / total) * 100}%`;
+        document.getElementById('correctCount').textContent = correctAnswers;
+        document.getElementById('accuracy').textContent = `${Math.round((correctAnswers / current) * 100)}%`;
+
+        if (current <= 3) {
+            document.getElementById('currentChapter').textContent = '제1장';
+            document.getElementById('chapterProgress').style.width = `${(current / 3) * 100}%`;
+        } else if (current <= 6) {
+            document.getElementById('currentChapter').textContent = '제2장';
+            document.getElementById('chapterProgress').style.width = `${((current - 3) / 3) * 100}%`;
+        } else {
+            document.getElementById('currentChapter').textContent = '제3장';
+            document.getElementById('chapterProgress').style.width = `${((current - 6) / 3) * 100}%`;
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        answered = false;
+
+        // 모든 피드백 숨기기
+        document.querySelectorAll('.feedback').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.option-btn').forEach(el => el.classList.remove('selected', 'correct', 'incorrect'));
+
+        if (currentQuestion < quizData.length) {
+            const chapter = quizData[currentQuestion].chapter;
+            
+            // 다른 장으로 이동
+            document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`chapter${chapter}`).classList.add('active');
+            
+            updateStats();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // 완료
+            document.querySelectorAll('.chapter-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('completionMsg').classList.add('show');
+            document.getElementById('scoreDisplay').textContent = 
+                `🏆 최종 성적: ${correctAnswers}/${quizData.length} (${Math.round((correctAnswers / quizData.length) * 100)}%)`;
+        }
+    }
+
+    function resetQuiz() {
+        currentQuestion = 0;
+        correctAnswers = 0;
+        answered = false;
+        
+        document.querySelectorAll('.feedback').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.option-btn').forEach(el => el.classList.remove('selected', 'correct', 'incorrect'));
+        document.querySelectorAll('.chapter-section').forEach((el, idx) => {
+            if (idx === 0) el.classList.add('active');
+            else el.classList.remove('active');
+        });
+        document.getElementById('completionMsg').classList.remove('show');
+        document.getElementById('scoreDisplay').textContent = '';
+        
+        updateStats();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 초기 통계 업데이트
+    updateStats();
+</script>
+
+</body>
+</html>

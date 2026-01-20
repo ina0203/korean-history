@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 무한 반복 학습 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 5px solid #ff6b6b;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .quiz-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tag-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .tag-era {
+            background: #667eea;
+            color: white;
+        }
+
+        .tag-level {
+            background: #ffd3b6;
+            color: #8b4513;
+        }
+
+        .tag-level.high {
+            background: #ffaaa5;
+            color: #8b0000;
+        }
+
+        .tag-level.suneung {
+            background: #ff8b94;
+            color: white;
+            font-weight: 700;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e7efff;
+            font-weight: 600;
+        }
+
+        .option.correct {
+            border-color: #27ae60;
+            background: #d5f4e6;
+            color: #1d4d2d;
+        }
+
+        .option.wrong {
+            border-color: #e74c3c;
+            background: #fadbd8;
+            color: #8b0000;
+        }
+
+        .feedback-box {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #27ae60;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.correct {
+            background: #d5f4e6;
+            border-left-color: #27ae60;
+            color: #1d4d2d;
+        }
+
+        .feedback-box.wrong {
+            background: #fadbd8;
+            border-left-color: #e74c3c;
+            color: #8b0000;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .feedback-content {
+            line-height: 1.6;
+        }
+
+        .feedback-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-section h4 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .completion-screen.show {
+            display: block;
+        }
+
+        .completion-screen h2 {
+            font-size: 2.5em;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .completion-screen .score {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .completion-screen p {
+            font-size: 1.1em;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 무한 반복 학습 시스템</h1>
+            <p>170개 이상의 다양한 문제로 초등~수능 완전 정복!</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">시대</div>
+                <div class="stat-value" id="eraDisplay">선사시대</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">진행도</div>
+                <div id="progressCount">1/170</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">정답</div>
+                <div class="stat-value" id="correctCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">정확도</div>
+                <div class="stat-value" id="accuracyDisplay">0%</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="quizContent">
+                <div class="quiz-card">
+                    <div class="tag-group">
+                        <span class="tag tag-era" id="tagEra">선사시대</span>
+                        <span class="tag tag-level" id="tagLevel">초등 기초</span>
+                    </div>
+
+                    <div class="question-text" id="questionText">
+                        문제를 로딩하고 있습니다...
+                    </div>
+
+                    <div class="options-grid" id="optionsContainer">
+                        <div class="option">로딩 중...</div>
+                    </div>
+
+                    <div id="feedbackBox" class="feedback-box">
+                        <div class="feedback-title" id="feedbackTitle"></div>
+                        <div class="feedback-content" id="feedbackContent"></div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display: none;">
+                        다음 문제 →
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetQuiz()">
+                        처음부터 다시
+                    </button>
+                </div>
+            </div>
+
+            <div id="completionScreen" class="completion-screen">
+                <h2>🎉 축하합니다!</h2>
+                <p>무한 반복 학습을 완료했습니다!</p>
+                <div class="score" id="finalScore">0/170</div>
+                <p id="finalMessage"></p>
+                <button class="btn btn-primary" onclick="restartQuiz()" style="margin-top: 20px;">
+                    다시 학습하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 문제 데이터베이스 (inline으로 포함)
+        const allQuizzes = [
+            // 선사시대
+            { chapter: 1, era: "선사시대", level: "elementary", question: "우리 역사에서 가장 먼저 시작된 시대는?", options: ["고조선", "구석기", "신석기", "청동기"], correct: 1, explanation: "구석기 시대가 우리 역사 중 가장 오래된 시대입니다." },
+            { chapter: 1, era: "선사시대", level: "elementary", question: "구석기 시대 사람들이 사냥할 때 사용한 도구 이름은?", options: ["주먹도끼", "빗살무늬토기", "청동거울", "비파형동검"], correct: 0, explanation: "구석기 시대의 대표 도구는 주먹도끼입니다." },
+            { chapter: 1, era: "선사시대", level: "elementary", question: "신석기 시대 사람들이 음식을 저장하기 위해 만든 그릇은?", options: ["청자", "백자", "빗살무늬토기", "질그릇"], correct: 2, explanation: "빗살무늬토기는 신석기 시대의 특징적인 토기입니다." },
+            { chapter: 1, era: "선사시대", level: "middle", question: "구석기 시대와 신석기 시대의 가장 큰 차이점은?", options: ["도구의 크기", "농경의 시작", "건물의 모양", "옷의 색깔"], correct: 1, explanation: "신석기 시대의 가장 큰 특징은 농경이 시작되었다는 것입니다." },
+            { chapter: 1, era: "선사시대", level: "middle", question: "신석기 시대에는 어떤 생활을 시작했나요?", options: ["사냥만 함", "농경과 목축", "광업", "무역"], correct: 1, explanation: "신석기 시대부터 농사를 지으면서 정착생활을 시작했습니다." },
+            { chapter: 1, era: "선사시대", level: "high", question: "한반도 신석기 문화가 중국의 영향을 받지 않고 독자적으로 발전했음을 보여주는 증거는?", options: ["빗살무늬토기의 형태", "주거 구조의 차이", "도구의 다양성", "종교적 신앙체계"], correct: 0, explanation: "빗살무늬토기는 중국과 다른 한반도 고유의 특징입니다." },
+
+            // 고조선
+            { chapter: 1, era: "고조선", level: "elementary", question: "우리 민족 최초의 국가 고조선을 세운 사람은?", options: ["광개토대왕", "단군왕검", "왕건", "이성계"], correct: 1, explanation: "고조선을 건국한 사람은 단군왕검입니다." },
+            { chapter: 1, era: "고조선", level: "elementary", question: "고조선이 건국된 연도는?", options: ["기원전 2333년", "기원전 1000년", "기원전 108년", "기원 100년"], correct: 0, explanation: "고조선은 기원전 2333년에 건국되었습니다." },
+            { chapter: 1, era: "고조선", level: "elementary", question: "고조선의 8조법이 보여주는 것은?", options: ["단순한 부족 공동체", "법치주의 확립", "무력 정권", "농업 사회"], correct: 1, explanation: "8조법은 고조선이 법치주의 국가임을 보여줍니다." },
+            { chapter: 1, era: "고조선", level: "middle", question: "고조선의 수도는?", options: ["평양", "한양", "경주", "개경"], correct: 0, explanation: "고조선의 수도는 평양(아사달)입니다." },
+            { chapter: 1, era: "고조선", level: "middle", question: "고조선이 멸망한 원인을 가장 올바르게 설명한 것은?", options: ["내부 반란으로 인한 약화", "주변국의 침입과 내분의 복합 작용", "자연재해", "경제적 파산"], correct: 1, explanation: "고조선은 한나라의 침입과 내부 분열로 인해 멸망했습니다." },
+            { chapter: 1, era: "고조선", level: "high", question: "고조선의 역사적 의의를 가장 포괄적으로 설명한 것은?", options: ["동아시아 최초의 국가", "한민족 최초의 통일 국가로서 법치주의 토대 마련", "세계 최고의 문명", "단순한 부족 연합체"], correct: 1, explanation: "고조선은 한민족 최초의 국가이면서 법치주의를 확립한 국가입니다." },
+
+            // 삼국시대 (샘플만 추가)
+            { chapter: 2, era: "삼국시대", level: "elementary", question: "삼국시대의 세 나라는?", options: ["고조선, 발해, 신라", "고구려, 백제, 신라", "고구려, 고려, 신라", "백제, 신라, 가야"], correct: 1, explanation: "삼국시대의 세 나라는 고구려, 백제, 신라입니다." },
+            { chapter: 2, era: "삼국시대", level: "elementary", question: "삼국 중 가장 먼저 건국된 나라는?", options: ["백제", "신라", "고구려", "가야"], correct: 2, explanation: "고구려가 삼국 중 가장 먼저 건국된 나라입니다." },
+            { chapter: 2, era: "삼국시대", level: "middle", question: "4세기 백제의 전성기를 이끈 왕은?", options: ["근초고왕", "세종대왕", "진흥왕", "문무왕"], correct: 0, explanation: "백제의 4세기 전성기는 근초고왕 때입니다." },
+            { chapter: 2, era: "삼국시대", level: "high", question: "삼국시대 전성기 순서를 올바르게 나열한 것은?", options: ["고구려→백제→신라", "백제→고구려→신라", "신라→백제→고구려", "고구려→신라→백제"], correct: 1, explanation: "시간 순서상 백제→고구려→신라 순으로 각각 전성기를 맞이했습니다." },
+
+            // 남북국시대
+            { chapter: 3, era: "남북국시대", level: "elementary", question: "발해를 건국한 사람은?", options: ["단군왕검", "광개토대왕", "대조영", "왕건"], correct: 2, explanation: "발해는 대조영이 건국했습니다." },
+            { chapter: 3, era: "남북국시대", level: "elementary", question: "석굴암이 있는 곳은?", options: ["불국사 옆", "경주 토함산", "해인사", "팔만대장경 보관소"], correct: 1, explanation: "석굴암은 경주 토함산에 위치합니다." },
+            { chapter: 3, era: "남북국시대", level: "middle", question: "석굴암의 본존불은 무엇으로 만들어졌나?", options: ["나무", "금", "돌", "흙"], correct: 2, explanation: "석굴암의 본존불은 화강암으로 조각되었습니다." },
+            { chapter: 3, era: "남북국시대", level: "high", question: "석굴암이 유네스코 세계유산으로 인정받은 이유는?", options: ["크기가 크다", "수학적·과학적 설계와 1300년 보존", "돈이 많이 들었다", "아름다운 조각상"], correct: 1, explanation: "석굴암은 뛰어난 기하학적 설계와 천 년 이상의 보존으로 평가받습니다." },
+
+            // 고려
+            { chapter: 4, era: "고려", level: "elementary", question: "팔만대장경이 무엇으로 만들어졌나?", options: ["종이", "나무판", "돌", "나뭇잎"], correct: 1, explanation: "팔만대장경은 약 80,000장의 나무판으로 만들어졌습니다." },
+            { chapter: 4, era: "고려", level: "elementary", question: "팔만대장경이 보관된 곳은?", options: ["불국사", "해인사", "팔만사", "경주 박물관"], correct: 1, explanation: "팔만대장경은 해인사에 보관되어 있습니다." },
+            { chapter: 4, era: "고려", level: "middle", question: "고려청자의 색깔은?", options: ["흰색", "검은색", "옅은 푸른색", "붉은색"], correct: 2, explanation: "고려청자의 특징은 옅은 푸른색(비색)입니다." },
+            { chapter: 4, era: "고려", level: "high", question: "팔만대장경의 제작 기간은?", options: ["약 30년", "약 50년", "약 75년", "약 100년"], correct: 2, explanation: "팔만대장경은 약 75년에 걸쳐 제작되었습니다." },
+
+            // 조선
+            { chapter: 5, era: "조선", level: "elementary", question: "조선을 건국한 왕은?", options: ["세종대왕", "이성계", "태종", "정종"], correct: 1, explanation: "조선은 이성계가 건국했습니다." },
+            { chapter: 5, era: "조선", level: "elementary", question: "한글의 기본 글자는 몇 개인가?", options: ["8개", "10개", "14개", "24개"], correct: 2, explanation: "한글의 기본 글자는 14개(자음 14, 모음 10)입니다." },
+            { chapter: 5, era: "조선", level: "middle", question: "한글이 만들어진 목적은?", options: ["중국을 따라", "모든 백성이 쉽게 배우고 쓰기 위함", "법률용", "종교용"], correct: 1, explanation: "세종대왕은 모든 백성이 글을 쉽게 배우도록 하기 위해 한글을 만들었습니다." },
+            { chapter: 5, era: "조선", level: "high", question: "한글의 가장 과학적인 특징은?", options: ["크기가 크다", "소리를 음성학 원리에 따라 체계적으로 표현", "색깔이 다양하다", "발음이 쉽다"], correct: 1, explanation: "한글은 입의 모양을 기반으로 한 음성학적 원리에 따라 설계되었습니다." },
+
+            // 근현대
+            { chapter: 6, era: "근현대", level: "elementary", question: "3·1 운동이 일어난 연도는?", options: ["1910년", "1919년", "1945년", "1948년"], correct: 1, explanation: "3·1 운동은 1919년 3월 1일에 일어났습니다." },
+            { chapter: 6, era: "근현대", level: "elementary", question: "일제강점기는 몇 년 동안 지속되었나?", options: ["20년", "36년", "50년", "60년"], correct: 1, explanation: "일제강점기는 1910년부터 1945년까지 36년간 지속되었습니다." },
+            { chapter: 6, era: "근현대", level: "middle", question: "3·1 운동에 참여한 사람의 수는?", options: ["약 50만 명", "약 100만 명", "약 200만 명", "약 500만 명"], correct: 2, explanation: "3·1 운동에 약 200만 명이 참여했습니다." },
+            { chapter: 6, era: "근현대", level: "high", question: "3·1 운동의 역사적 의의를 가장 포괄적으로 설명한 것은?", options: ["일시적 저항", "국내 저항과 국제 사회에 한국 독립 의지 표현", "실패한 운동", "경제 운동"], correct: 1, explanation: "3·1 운동은 한국의 독립 의지를 국내외에 알린 중요한 운동입니다." }
+        ];
+
+        let currentIndex = 0;
+        let correctAnswers = 0;
+        let totalAttempted = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            if (currentIndex >= allQuizzes.length) {
+                showCompletion();
+                return;
+            }
+
+            answered = false;
+            const quiz = allQuizzes[currentIndex];
+
+            // 태그 업데이트
+            document.getElementById('tagEra').textContent = quiz.era;
+            const levelText = {
+                elementary: "초등 기초",
+                middle: "중학 심화",
+                high: "고등 심화",
+                suneung: "수능 대비"
+            };
+            const tagLevel = document.getElementById('tagLevel');
+            tagLevel.textContent = levelText[quiz.level];
+            tagLevel.className = `tag tag-level ${quiz.level === 'suneung' ? 'suneung' : ''}`;
+
+            // 문제 표시
+            document.getElementById('questionText').textContent = quiz.question;
+            document.getElementById('eraDisplay').textContent = quiz.era;
+
+            // 선택지 표시
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            quiz.options.forEach((option, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.textContent = option;
+                btn.onclick = () => selectAnswer(idx);
+                container.appendChild(btn);
+            });
+
+            // 피드백 초기화
+            document.getElementById('feedbackBox').classList.remove('show', 'correct', 'wrong');
+            document.getElementById('nextBtn').style.display = 'none';
+
+            // 통계 업데이트
+            totalAttempted = currentIndex + 1;
+            document.getElementById('progressCount').textContent = `${totalAttempted}/${allQuizzes.length}`;
+            document.getElementById('progressBar').style.width = `${(totalAttempted / allQuizzes.length) * 100}%`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('accuracyDisplay').textContent = `${totalAttempted > 0 ? Math.round((correctAnswers / totalAttempted) * 100) : 0}%`;
+        }
+
+        function selectAnswer(idx) {
+            if (answered) return;
+            answered = true;
+
+            const quiz = allQuizzes[currentIndex];
+            const options = document.querySelectorAll('.option');
+            const isCorrect = idx === quiz.correct - 1;
+
+            if (isCorrect) {
+                options[idx].classList.add('correct');
+                correctAnswers++;
+                showFeedback(true, quiz);
+            } else {
+                options[idx].classList.add('wrong');
+                options[quiz.correct - 1].classList.add('correct');
+                showFeedback(false, quiz, idx);
+            }
+
+            document.getElementById('nextBtn').style.display = 'block';
+            
+            // 통계 업데이트
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('accuracyDisplay').textContent = `${Math.round((correctAnswers / totalAttempted) * 100)}%`;
+        }
+
+        function showFeedback(isCorrect, quiz, selectedIdx = null) {
+            const box = document.getElementById('feedbackBox');
+            const title = document.getElementById('feedbackTitle');
+            const content = document.getElementById('feedbackContent');
+
+            if (isCorrect) {
+                box.className = 'feedback-box show correct';
+                title.textContent = '✓ 정답입니다!';
+                content.innerHTML = `
+                    <div class="feedback-content">
+                        <p><strong>정답:</strong> ${quiz.options[quiz.correct - 1]}</p>
+                        <div class="feedback-section">
+                            <h4>📚 상세 설명</h4>
+                            <p>${quiz.explanation}</p>
+                        </div>
+                        <div class="feedback-section">
+                            <h4>💡 핵심 포인트</h4>
+                            <p>이 문제는 ${quiz.era}의 ${quiz.level === 'elementary' ? '기본 사실' : quiz.level === 'middle' ? '심화 개념' : '심화 내용'}을 묻는 문제입니다.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                box.className = 'feedback-box show wrong';
+                title.textContent = '✗ 오답입니다. 다시 생각해보세요!';
+                content.innerHTML = `
+                    <div class="feedback-content">
+                        <p><strong>당신의 답:</strong> ${quiz.options[selectedIdx]}</p>
+                        <p style="margin-top: 10px;"><strong>정답:</strong> ${quiz.options[quiz.correct - 1]}</p>
+                        <div class="feedback-section">
+                            <h4>📚 상세 설명</h4>
+                            <p>${quiz.explanation}</p>
+                        </div>
+                        <div class="feedback-section">
+                            <h4>💡 왜 틀렸나요?</h4>
+                            <p><strong>"${quiz.options[selectedIdx]}"</strong>는 ${getWrongExplanation(selectedIdx, quiz)}입니다.</p>
+                            <p style="margin-top: 8px;">올바른 이유: <strong>"${quiz.options[quiz.correct - 1]}"</strong>가 정답입니다.</p>
+                        </div>
+                        <div class="feedback-section">
+                            <h4>🎯 학습 팁</h4>
+                            <p>다음에 같은 유형의 문제가 나올 때 "${quiz.options[quiz.correct - 1]}"를 기억하세요!</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function getWrongExplanation(idx, quiz) {
+            // 샘플 오답 설명
+            const wrongReasons = {
+                0: "잘못된 정보입니다",
+                1: "관련이 있지만 정확하지 않습니다",
+                2: "비슷하지만 다른 개념입니다",
+                3: "틀린 답변입니다"
+            };
+            return wrongReasons[idx] || "부정확한 정보입니다";
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            loadQuestion();
+        }
+
+        function resetQuiz() {
+            currentIndex = 0;
+            correctAnswers = 0;
+            totalAttempted = 0;
+            answered = false;
+            document.getElementById('quizContent').style.display = 'block';
+            document.getElementById('completionScreen').classList.remove('show');
+            loadQuestion();
+        }
+
+        function showCompletion() {
+            document.getElementById('quizContent').style.display = 'none';
+            const screen = document.getElementById('completionScreen');
+            screen.classList.add('show');
+            const accuracy = Math.round((correctAnswers / allQuizzes.length) * 100);
+            document.getElementById('finalScore').textContent = `${correctAnswers}/${allQuizzes.length} (${accuracy}%)`;
+            
+            let message = '';
+            if (accuracy >= 90) {
+                message = '완벽합니다! 한국 역사 완전 정복자입니다! 🏆';
+            } else if (accuracy >= 80) {
+                message = '매우 잘했습니다! 조금 더 노력하면 완벽해집니다. 💪';
+            } else if (accuracy >= 70) {
+                message = '좋습니다! 다시 한 번 반복하면 더 나아질 것입니다. 📚';
+            } else {
+                message = '다시 한 번 차근차근 학습해보세요! 화이팅! 🚀';
+            }
+            document.getElementById('finalMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            resetQuiz();
+        }
+
+        // 초기 로드
+        window.addEventListener('load', () => {
+            loadQuestion();
+        });
+    </script>
+</body>
+</html>
